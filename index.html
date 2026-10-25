@@ -137,6 +137,57 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);display
 .jump.on{display:flex}
 .jump button{width:40px;height:40px;background:rgba(6,9,18,.92);border:1px solid var(--line);color:#9fb2c4;cursor:pointer;font-size:14px}
 .jump button:hover{border-color:var(--cy);color:var(--cy)}
+/* ============ 移动端适配 ============ */
+@media (max-width:760px){
+  .wrap{padding:34px 16px 70px}
+  .badge{font-size:9.5px;padding:6px 10px;letter-spacing:.18em}
+  h1{font-size:clamp(27px,9vw,40px);letter-spacing:-.03em}
+  .meta{font-size:12px;line-height:1.7}
+  .privacy{font-size:10.5px;line-height:1.7}
+  .kpis{gap:10px;margin:26px 0 4px}
+  .kpi{padding:14px 12px}
+  .kpi .n{font-size:26px}
+  .kpi .l{font-size:9px;letter-spacing:.1em}
+  .card{padding:16px 14px}
+  .card h2{font-size:10.5px;margin-bottom:12px}
+  .glist{max-height:430px}
+  .g .nm{max-width:calc(100vw - 178px);font-size:12.2px}
+  .g .sub{font-size:9.8px}
+  .g .cnt{font-size:11.5px}
+  .search{font-size:16px;padding:12px}
+  .plist{max-height:330px}
+  .pitem .pn{max-width:calc(100vw - 160px)}
+  #tl{grid-template-columns:1fr!important}
+  footer{flex-direction:column;gap:6px;font-size:9.5px}
+  .jump{right:12px;bottom:16px}
+  .jump button{width:36px;height:36px}
+  /* 群聊 */
+  .dhead{flex-direction:column;gap:10px;padding:10px 14px 12px}
+  .dhead .t{font-size:13.5px;white-space:normal;line-height:1.45}
+  .dhead .meta2{font-size:10px;gap:5px 10px}
+  .dtools{width:100%;gap:6px}
+  .dtools input{flex:1;width:auto;font-size:16px;padding:9px 10px}
+  .dtools .btn{padding:9px 10px;font-size:11px}
+  .tops{max-height:54px;overflow-y:auto}
+  .top{font-size:10px;padding:3px 7px}
+  .msgs{padding:12px 12px 40px}
+  .mrow{max-width:100%;gap:8px}
+  .av{width:22px;height:22px;font-size:10px}
+  .mt{font-size:13px;line-height:1.62}
+  .mh .nm{font-size:11px}
+  .dsep{margin:18px 0 10px;font-size:10px}
+  /* 个人档案 */
+  .pbody{padding:12px 14px 50px}
+  .psum{padding:12px;font-size:12.5px;line-height:1.8}
+  .pgrid{grid-template-columns:1fr!important;gap:10px}
+  .pcard{padding:12px}
+  .pm2{max-width:100%;gap:7px}
+  .pm2 .gchip{max-width:72px;font-size:9px;padding:2px 5px}
+  .pm2 .pb .tx{font-size:12.8px}
+  .sample{font-size:11.5px;max-height:100px}
+  .chips{gap:4px}
+  .chip{font-size:10px;padding:3px 6px}
+}
 </style>
 </head>
 <body>
