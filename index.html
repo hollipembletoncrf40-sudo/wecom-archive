@@ -89,6 +89,50 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);display
 .loadbar button:hover{background:rgba(0,229,255,.16)}
 .loading,.empty{padding:60px 0;text-align:center;color:#4d5a6b;font-size:12.5px;letter-spacing:.1em}
 .err{padding:40px 20px;color:var(--mg);font-size:13px;line-height:1.8;text-align:center}
+/* ============ 人员检索 ============ */
+.plist{display:flex;flex-direction:column;gap:5px;max-height:300px;overflow-y:auto}
+.plist::-webkit-scrollbar{width:6px}.plist::-webkit-scrollbar-thumb{background:rgba(0,229,255,.25)}
+.pitem{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:9px 11px;cursor:pointer;border:1px solid transparent;background:rgba(255,255,255,.022);transition:.18s}
+.pitem:hover{border-color:rgba(255,45,149,.45);background:rgba(255,45,149,.06);transform:translateX(3px)}
+.pitem .pn{font-size:12.6px;color:#e2eefb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px}
+.pitem .pm{font-size:10.5px;color:#556374;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+.pitem .pm em{font-style:normal;color:#7ac9d8}
+.pitem .pc{font-size:12.5px;color:var(--mg);font-variant-numeric:tabular-nums;font-weight:700}
+.pitem .pc small{display:block;font-size:9.5px;color:#4a5768;font-weight:400;margin-top:2px;text-align:right}
+.sug{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.sug span{font-size:10.5px;padding:4px 9px;border:1px solid rgba(120,180,255,.16);color:#8ea3b8;cursor:pointer;transition:.15s}
+.sug span:hover{border-color:var(--mg);color:var(--mg)}
+
+#pdrawer{position:fixed;inset:0;z-index:120;background:rgba(3,4,10,.97);backdrop-filter:blur(18px);display:none;flex-direction:column}
+#pdrawer.on{display:flex}
+.pbody{flex:1;overflow-y:auto;padding:20px 26px 60px}
+.pbody::-webkit-scrollbar{width:8px}.pbody::-webkit-scrollbar-thumb{background:rgba(255,45,149,.28)}
+.psum{border-left:2px solid var(--mg);background:rgba(255,45,149,.05);padding:14px 16px;font-size:13px;line-height:1.9;color:#d9e6f2;margin-bottom:16px}
+.psum b{color:var(--yl);font-weight:600}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:1100px){.pgrid{grid-template-columns:repeat(2,1fr)}}
+.pcard{border:1px solid var(--line);background:rgba(10,16,30,.55);padding:14px}
+.pcard h3{font-size:10.5px;letter-spacing:.18em;color:#7f93a8;text-transform:uppercase;margin-bottom:11px;font-weight:600}
+.pk{display:flex;justify-content:space-between;font-size:11.5px;color:#a9bbcc;padding:3px 0;font-variant-numeric:tabular-nums}
+.pk b{color:#eaf2ff;font-weight:600}
+.pbar{height:4px;background:rgba(255,255,255,.06);margin:5px 0 9px;overflow:hidden}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--cy),var(--mg))}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:10.5px;padding:3px 8px;border:1px solid rgba(120,180,255,.16);color:#9db0c4;background:rgba(255,255,255,.022)}
+.chip b{color:var(--yl);margin-left:4px;font-weight:600;font-variant-numeric:tabular-nums}
+.chip.click{cursor:pointer}.chip.click:hover{border-color:var(--cy);color:var(--cy)}
+.sample{font-size:12px;line-height:1.75;color:#b9c9d8;border-left:2px solid rgba(0,229,255,.35);padding:6px 10px;margin-bottom:8px;background:rgba(255,255,255,.02);white-space:pre-wrap;word-break:break-word;max-height:120px;overflow:hidden}
+.gsep{display:flex;align-items:center;gap:10px;margin:16px 0 8px;font-size:10.5px;color:#4d5a6b;letter-spacing:.14em}
+.gsep::before,.gsep::after{content:"";height:1px;background:rgba(120,180,255,.1);flex:1}
+.pm2{display:flex;gap:10px;padding:6px 0;max-width:980px}
+.pm2 .gchip{flex-shrink:0;font-size:9.5px;padding:2px 7px;border:1px solid rgba(120,180,255,.18);color:#6f8399;height:fit-content;margin-top:2px;white-space:nowrap;max-width:190px;overflow:hidden;text-overflow:ellipsis}
+.pm2 .pb{min-width:0;flex:1}
+.pm2 .pb .tm2{font-size:10px;color:#45525f;font-variant-numeric:tabular-nums;margin-bottom:2px}
+.pm2 .pb .tx{font-size:13px;line-height:1.68;color:#d3e0ec;white-space:pre-wrap;word-break:break-word}
+.pm2 .pb .tx mark{background:rgba(255,230,0,.28);color:#fff}
+.mh .nm.clickable{cursor:pointer}
+.mh .nm.clickable:hover{text-decoration:underline}
+
 .jump{position:fixed;right:34px;bottom:30px;z-index:100;display:none;flex-direction:column;gap:8px}
 .jump.on{display:flex}
 .jump button{width:40px;height:40px;background:rgba(6,9,18,.92);border:1px solid var(--line);color:#9fb2c4;cursor:pointer;font-size:14px}
@@ -121,6 +165,12 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);display
       <div class="glist" id="gl"></div>
     </div>
     <div class="card"><h2>每日脉冲</h2><canvas id="cD" height="230"></canvas></div>
+    <div class="card span3"><h2>人员检索 · 输全名直达档案 / 输姓氏模糊匹配</h2>
+      <input class="search" id="pq" placeholder="输入姓名或姓氏，例如：方 / 罗 / 莫小娟 …">
+      <div class="hintrow"><span id="pHint">660 位发言人</span><span>按发言量排序 · 回车打开第一人</span></div>
+      <div class="plist" id="pl"></div>
+      <div class="sug" id="psug"></div>
+    </div>
     <div class="card span3"><h2>群内发言 TOP 24 · 点击筛选</h2><div class="glist" id="tl" style="max-height:none;display:grid;grid-template-columns:repeat(2,1fr);gap:6px"></div></div>
   </div>
 
@@ -146,6 +196,21 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);display
     </div>
   </div>
   <div class="msgs" id="dMsgs"></div>
+</div>
+
+<div id="pdrawer">
+  <div class="dhead">
+    <div class="l">
+      <div class="t" id="pName">—</div>
+      <div class="meta2" id="pMeta"></div>
+      <div class="tops" id="pTags"></div>
+    </div>
+    <div class="dtools">
+      <input id="pqs" placeholder="在 TA 的发言里搜索…">
+      <button class="btn x" onclick="closePerson()">关闭 ESC</button>
+    </div>
+  </div>
+  <div class="pbody" id="pBody"></div>
 </div>
 
 <script src="lock.js"></script>
@@ -268,6 +333,10 @@ function msgNode(m){
   const mh=document.createElement('div'); mh.className='mh';
   const nm=document.createElement('span'); nm.className='nm'; nm.textContent=m.s||'未知';
   nm.style.color=`hsl(${hue(m.s||'')},85%,72%)`;
+  if(m.s && PBY && PBY.has(m.s)){
+    nm.classList.add('clickable'); nm.title='查看 TA 的完整档案';
+    nm.onclick=()=>{ closeChat(); openPerson(PBY.get(m.s)); };
+  }
   const tm=document.createElement('span'); tm.className='tm'; tm.textContent=(m.t||'').slice(6);
   mh.append(nm,tm);
   const mt=document.createElement('div'); mt.className='mt';
@@ -381,11 +450,174 @@ function copyLink(){
 function jumpTop(){const b=$('dMsgs'); b.scrollTop=0;}
 function jumpBottom(){const b=$('dMsgs'); b.scrollTop=b.scrollHeight;}
 addEventListener('keydown',e=>{
-  if(e.key==='Escape') closeChat();
-  if(e.key==='/'&&!$('drawer').classList.contains('on')){e.preventDefault();$('q').focus();}
+  if(e.key==='Escape'){
+    if($('pdrawer').classList.contains('on')) closePerson();
+    else closeChat();
+    return;
+  }
+  if(e.key==='/'&&!$('drawer').classList.contains('on')&&!$('pdrawer').classList.contains('on')){
+    e.preventDefault(); $('q').focus();
+  }
 });
 
-/* ---------- 启动 ---------- */
+/* ---------- 人员检索 ---------- */
+let PEOPLE=[], PMAP=new Map(), PBY=new Map(), PMSG=[], PSHOWN=0, PKEY='', PGRP='', PCUR=null;
+
+function renderPeople(list){
+  const el=$('pl');
+  if(!list.length){ el.innerHTML='<div style="color:#556374;font-size:12px;padding:12px">没有匹配的人 · 试试姓氏或名字片段</div>'; $('pHint').textContent='无匹配'; return; }
+  $('pHint').textContent=list.length+' 位匹配'+(list.length>40?' · 显示前 40':'');
+  el.innerHTML=list.slice(0,40).map(p=>`<div class="pitem" data-id="${p.id}" data-n="${esc(p.n)}" role="button" tabindex="0">
+    <div style="display:flex;gap:9px;align-items:center;min-width:0">
+      <div style="width:24px;height:24px;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#03040a;background:hsl(${hue(p.n)},82%,62%)">${initials(p.n)}</div>
+      <div style="min-width:0"><div class="pn">${esc(p.n)}</div>
+      <div class="pm">${(p.r||[]).map(r=>'<em>'+esc(r)+'</em>').join('')||'<span style="color:#4a5768">—</span>'}<span>${esc(p.y||'')}</span></div></div>
+    </div>
+    <div class="pc">${fmt(p.t)}<small>${p.g} 个群</small></div>
+  </div>`).join('');
+}
+function searchPeople(q){
+  q=(q||'').trim().toLowerCase();
+  if(!q){ renderPeople(PEOPLE.slice(0,40)); return; }
+  const exact=PEOPLE.filter(p=>p.n.toLowerCase()===q);
+  const rest=PEOPLE.filter(p=>p.n.toLowerCase()!==q && p.n.toLowerCase().includes(q));
+  renderPeople(exact.concat(rest));
+}
+$('pq').addEventListener('input',e=>searchPeople(e.target.value));
+$('pq').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){ const first=$('pl').querySelector('.pitem'); if(first) openPerson(first.dataset.id); }
+});
+$('pl').addEventListener('click',e=>{ const it=e.target.closest('.pitem'); if(it) openPerson(it.dataset.id); });
+$('pl').addEventListener('keydown',e=>{ if(e.key==='Enter'){ const it=e.target.closest('.pitem'); if(it) openPerson(it.dataset.id); } });
+
+/* ---------- 个人档案 ---------- */
+async function openPerson(id){
+  const p=PMAP.get(id); if(!p) return;
+  PCUR=p; PMSG=[]; PSHOWN=0; PKEY=''; PGRP='';
+  $('pdrawer').classList.add('on');
+  $('pName').textContent=p.n;
+  $('pMeta').innerHTML='<span>读取中…</span>';
+  $('pTags').innerHTML='';
+  $('pBody').innerHTML='<div class="loading">正在读取该员工全部发言…</div>';
+  $('pqs').value='';
+  history.replaceState(null,'','#p='+id);
+  let d;
+  try{ d=await LOAD('data/people/'+id+'.json'); }
+  catch(err){ $('pBody').innerHTML=`<div class="err">读取失败：${esc(err.message)}</div>`; return; }
+  PMSG=(d.m||[]).slice();
+  renderProfile(d.p||p);
+}
+
+function renderProfile(pr){
+  $('pName').textContent=pr.name;
+  $('pMeta').innerHTML=`<span><b>${fmt(pr.total)}</b> 条发言</span><span><b>${pr.gnum}</b> 个群</span><span><b>${pr.days}</b> 个活跃日</span><span>${pr.first} → ${pr.last}</span><span>日均 ${(pr.total/Math.max(pr.days,1)).toFixed(1)} 条</span>`;
+  $('pTags').innerHTML=(pr.roles||[]).map(r=>`<span class="top" style="cursor:default">${esc(r)}</span>`).join('')
+    +`<span class="top" style="cursor:default">${esc(pr.rhythm)}</span>`
+    +`<span class="top" style="cursor:default">高峰 ${String(pr.peak).padStart(2,'0')}:00</span>`
+    +`<span class="top" style="cursor:default">${esc(pr.respTxt)}</span>`;
+
+  const H=pr.hours||[], maxH=Math.max(...H,1);
+  const hourCells=H.map((v,i)=>{
+    const h=Math.round(v/maxH*46);
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:#45525f">
+      <div style="height:46px;display:flex;align-items:flex-end"><i style="display:block;width:9px;height:${Math.max(h,1)}px;background:${i===pr.peak?'var(--yl)':'linear-gradient(180deg,var(--cy),rgba(0,229,255,.15))'}"></i></div>
+      <span>${i}</span></div>`;
+  }).join('');
+
+  const maxG=Math.max(...(pr.groups||[]).map(g=>g.n),1);
+  const gHtml=(pr.groups||[]).slice(0,6).map(g=>`<div class="pk"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px">${esc(g.name.replace(/（.*?）/g,''))}</span><b>${fmt(g.n)}</b></div>
+    <div class="pbar"><i style="width:${(g.n/maxG*100).toFixed(1)}%"></i></div>`).join('');
+
+  const kwHtml=(pr.kw||[]).slice(0,14).map(([w,n])=>`<span class="chip">${esc(w)}<b>${n}</b></span>`).join('');
+  const ctHtml=(pr.contacts||[]).slice(0,8).map(([n,c])=>`<span class="chip click" data-n="${esc(n)}">${esc(n)}<b>${c}</b></span>`).join('')||'<span style="font-size:11px;color:#4a5768">无明显固定协作对象</span>';
+  const sampleHtml=(pr.samples||[]).map(s=>`<div class="sample">${esc(s)}</div>`).join('')||'<div style="font-size:11px;color:#4a5768">无长文本样例</div>';
+
+  $('pBody').innerHTML=`
+    <div class="psum">${esc(pr.summary)}</div>
+    <div class="pgrid">
+      <div class="pcard"><h3>24h 发言分布</h3><div style="display:flex;justify-content:space-between;gap:1px">${hourCells}</div></div>
+      <div class="pcard"><h3>发言主战场</h3>${gHtml}</div>
+      <div class="pcard"><h3>业务关键词</h3><div class="chips">${kwHtml}</div></div>
+      <div class="pcard"><h3>高频协作对象</h3><div class="chips">${ctHtml}</div></div>
+    </div>
+    <div class="pgrid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="pcard"><h3>典型话术</h3>${sampleHtml}</div>
+      <div class="pcard"><h3>其它指标</h3>
+        <div class="pk"><span>平均单条字数</span><b>${pr.avgLen}</b></div>
+        <div class="pk"><span>夜间(20–06)占比</span><b>${Math.round((pr.night||0)*100)}%</b></div>
+        <div class="pk"><span>响应中位时间</span><b>${pr.resp==null?'—':pr.resp+' 分钟'}</b></div>
+        <div class="pk"><span>最活跃的一天</span><b>${pr.busiest?pr.busiest.d+'（'+pr.busiest.n+' 条）':'—'}</b></div>
+        <div class="pk"><span>首次 / 最后发言</span><b style="font-size:10.5px">${pr.first} / ${pr.last}</b></div>
+      </div>
+    </div>
+    <div class="gsep">全部历史发言 · ${fmt(PMSG.length)} 条</div>
+    <div id="pMsgs"></div>`;
+
+  $('pBody').querySelectorAll('.chip.click').forEach(c=>{
+    c.onclick=()=>{ const pid=PBY.get(c.dataset.n); if(pid) openPerson(pid); };
+  });
+  $('pBody').querySelectorAll('.pk').forEach(()=>{});
+  renderPMsg(true);
+}
+
+function renderPMsg(reset){
+  const box=$('pMsgs'); if(!box) return;
+  let view=PMSG.filter(m=>{
+    if(PGRP && m.g!==PGRP) return false;
+    if(PKEY && !(m.c||'').toLowerCase().includes(PKEY.toLowerCase())) return false;
+    return true;
+  });
+  if(reset){
+    box.innerHTML='';
+    if(!view.length){ box.innerHTML='<div class="empty">没有匹配的发言</div>'; return; }
+    const tip=document.createElement('div'); tip.className='empty'; tip.style.padding='4px 0 10px';
+    tip.textContent=`命中 ${fmt(view.length)} 条`+(PGRP?' · 群：'+groupShort(PGRP):'')+(PKEY?' · 「'+PKEY+'」':'');
+    box.appendChild(tip);
+  }
+  const start=Math.max(view.length-PSHOWN-150,0), end=view.length-PSHOWN;
+  if(end<=start) return;
+  const anchor=box.scrollHeight, top=$('pBody').scrollTop;
+  const frag=document.createDocumentFragment();
+  for(let i=start;i<end;i++){
+    const m=view[i];
+    const row=document.createElement('div'); row.className='pm2';
+    const gc=document.createElement('div'); gc.className='gchip'; gc.textContent=groupShort(m.g);
+    gc.title=groupName(m.g); gc.style.cursor='pointer';
+    gc.onclick=()=>{ PGRP=(PGRP===m.g?'':m.g); renderPMsg(true); };
+    const b=document.createElement('div'); b.className='pb';
+    const tm=document.createElement('div'); tm.className='tm2'; tm.textContent=m.t;
+    const tx=document.createElement('div'); tx.className='tx'; paintText(tx,m.c||'',PKEY);
+    b.append(tm,tx); row.append(gc,b);
+    frag.appendChild(row);
+  }
+  const old=box.querySelector('.loadbar'); if(old) old.remove();
+  box.appendChild(frag);
+  PSHOWN+=150;
+  if(start>0){
+    const bar=document.createElement('div'); bar.className='loadbar';
+    const btn=document.createElement('button'); btn.textContent=`加载更早（剩余 ${fmt(start)} 条）`;
+    btn.onclick=()=>renderPMsg(false); bar.appendChild(btn);
+    box.insertBefore(bar,box.firstChild);
+    $('pBody').scrollTop=top;
+  }else{
+    $('pBody').scrollTop=reset?0:top;
+  }
+}
+function groupName(id){ const g=GROUPS.find(x=>String(x.id)===String(id)); return g?g.name:id; }
+function groupShort(id){ const n=groupName(id); return n.replace(/[（(].*?[）)]/g,'').slice(0,14); }
+
+let pqsT=null;
+$('pqs').addEventListener('input',e=>{
+  clearTimeout(pqsT);
+  pqsT=setTimeout(()=>{ PKEY=e.target.value.trim(); PSHOWN=0; renderPMsg(true); },220);
+});
+function closePerson(){
+  $('pdrawer').classList.remove('on');
+  PCUR=null;
+  history.replaceState(null,'',location.pathname);
+}
+
+
 (async function boot(){
   try{ if(window.__READY__) await window.__READY__; }catch(e){ return; }
   try{
@@ -405,6 +637,23 @@ addEventListener('keydown',e=>{
   $('kDays').textContent=STATS.days||'—';
   $('footTotal').textContent=fmt(STATS.total)+' messages · '+GROUPS.length+' groups · 2026';
   renderGroups(GROUPS);
+
+  /* 人员库 */
+  try{
+    const pj=await LOAD('data/people.json');
+    PEOPLE=pj.people||[];
+    PEOPLE.forEach(p=>{ PMAP.set(p.id,p); PBY.set(p.n,p.id); });
+    $('pHint').textContent=PEOPLE.length+' 位发言人 · 输入姓氏可模糊匹配';
+    renderPeople(PEOPLE.slice(0,40));
+    const picks=(STATS.topSenders||[]).slice(0,8).map(([n])=>n).filter(n=>PBY.has(n));
+    $('psug').innerHTML='<span style="border:none;cursor:default;color:#45525f">快速入口</span>'+
+      picks.map(n=>`<span data-n="${esc(n)}">${esc(n.slice(0,10))}</span>`).join('');
+    $('psug').addEventListener('click',e=>{
+      const s=e.target.closest('span[data-n]'); if(!s) return;
+      openPerson(PBY.get(s.dataset.n));
+    });
+  }catch(e){ $('pHint').textContent='人员库加载失败'; }
+
   $('tl').innerHTML=(STATS.topSenders||[]).map(([n,c])=>{
     const rank=Math.round(c/ (STATS.topSenders[0][1]/100));
     return `<div class="g" data-n="${esc(n)}" style="cursor:pointer">
@@ -418,6 +667,7 @@ addEventListener('keydown',e=>{
   $('tl').addEventListener('click',e=>{
     const row=e.target.closest('.g'); if(!row) return;
     const n=row.dataset.n;
+    if(PBY.has(n)){ openPerson(PBY.get(n)); return; }
     const target=GROUPS.find(g=>(g.sp||[]).some(([x])=>x===n));
     if(target){ openChat(target.id); setTimeout(()=>{
       const chip=[...$('dTops').children].find(c=>c.dataset.n===n);
@@ -426,6 +676,8 @@ addEventListener('keydown',e=>{
   });
   drawMonth();drawHour();drawDaily();
 
+  const hp=location.hash.match(/^#p=(\w+)/);
+  if(hp){ openPerson(hp[1]); return; }
   const h=location.hash.match(/^#g=(\w+)/);
   if(h) openChat(h[1]);
 })();
