@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WECOM · 企业微信群聊档案</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#03040a;--cy:#00e5ff;--mg:#ff2d95;--yl:#ffe600;--tx:#eaf2ff;--dim:#6b7a90;--line:rgba(120,180,255,.12);--card:rgba(10,16,30,.66)}
+html,body{height:100%}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+#net{position:fixed;inset:0;z-index:-1;opacity:.75}
+.glow{position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(60% 50% at 12% 8%,rgba(0,229,255,.13),transparent 70%),radial-gradient(50% 45% at 88% 18%,rgba(255,45,149,.12),transparent 70%),radial-gradient(60% 50% at 60% 95%,rgba(255,230,0,.06),transparent 70%)}
+.wrap{max-width:1320px;margin:0 auto;padding:64px 30px 90px}
+.badge{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cy);border:1px solid rgba(0,229,255,.32);padding:7px 14px;border-radius:2px;background:rgba(0,229,255,.06)}
+.badge i{width:5px;height:5px;background:var(--yl);border-radius:50%;box-shadow:0 0 10px var(--yl);animation:blink 1.6s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+h1{margin:22px 0 8px;font-size:clamp(34px,5.6vw,68px);font-weight:900;letter-spacing:-.045em;line-height:1;
+  background:linear-gradient(92deg,#fff 0%,#8ff4ff 38%,#ff8ec9 68%,#fff 100%);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 7s linear infinite}
+@keyframes flow{to{background-position:220% 0}}
+.meta{margin-top:14px;color:var(--dim);font-size:13.5px}
+.meta b{color:#b9d6ea}
+.privacy{margin-top:10px;font-size:11.5px;color:#5d6b7e}
+.privacy em{font-style:normal;color:var(--mg)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:38px 0 6px}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{padding:20px;border:1px solid var(--line);background:var(--card);position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--cy),transparent)}
+.kpi .n{display:block;font-size:clamp(26px,3.2vw,40px);font-weight:800;font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 0 18px rgba(0,229,255,.5)}
+.kpi .l{margin-top:7px;font-size:10.5px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+.card{padding:22px;border:1px solid var(--line);background:var(--card);position:relative}
+.card.span2{grid-column:span 2}.card.span3{grid-column:span 3}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.card,.card.span2,.card.span3{grid-column:span 1}}
+.card h2{font-size:11.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#8fa6bd;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.card h2::before{content:"";width:12px;height:2px;background:var(--cy);box-shadow:0 0 12px var(--cy)}
+canvas{width:100%;display:block}
+.search{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--tx);padding:11px 13px;font-size:13px;outline:none;font-family:inherit}
+.search:focus{border-color:rgba(0,229,255,.5);box-shadow:0 0 0 2px rgba(0,229,255,.08)}
+.hintrow{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#556374;margin:8px 0 12px}
+.glist{display:flex;flex-direction:column;gap:6px;max-height:560px;overflow-y:auto;padding-right:4px}
+.glist::-webkit-scrollbar{width:6px}.glist::-webkit-scrollbar-thumb{background:rgba(0,229,255,.25)}
+.g{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 12px;cursor:pointer;border:1px solid transparent;background:rgba(255,255,255,.022);transition:.2s}
+.g:hover{border-color:rgba(0,229,255,.45);background:rgba(0,229,255,.06);transform:translateX(3px)}
+.g .nm{font-size:12.8px;color:#d6e6f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:420px}
+.g .sub{font-size:10.5px;color:#556374;margin-top:3px;font-variant-numeric:tabular-nums}
+.g .cnt{font-size:12.5px;color:var(--cy);font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+.g .cnt small{display:block;font-size:9.5px;color:#4a5768;font-weight:400;margin-top:2px}
+.rank{width:16px;font-size:10px;color:#3b4757;font-variant-numeric:tabular-nums}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:10.5px;color:#3f4b5b;letter-spacing:.1em}
+
+/* ============ 聊天抽屉 ============ */
+#drawer{position:fixed;inset:0;z-index:99;background:rgba(3,4,10,.96);backdrop-filter:blur(18px);display:none;flex-direction:column}
+#drawer.on{display:flex}
+.dhead{display:flex;align-items:flex-start;gap:18px;padding:16px 26px 14px;border-bottom:1px solid var(--line);flex-shrink:0;background:rgba(6,9,18,.9)}
+.dhead .l{flex:1;min-width:0}
+.dhead .t{font-size:15.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:7px}
+.dhead .meta2{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:#69788a;font-variant-numeric:tabular-nums}
+.dhead .meta2 b{color:var(--cy);font-weight:600}
+.tops{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.top{font-size:10.5px;padding:3px 8px;border:1px solid rgba(120,180,255,.16);color:#8ea3b8;background:rgba(255,255,255,.025);cursor:pointer;transition:.15s}
+.top:hover{border-color:var(--cy);color:var(--cy)}
+.top b{color:var(--yl);font-weight:600;margin-left:4px;font-variant-numeric:tabular-nums}
+.dtools{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.dtools input{width:190px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--tx);padding:8px 11px;font-size:12px;outline:none;font-family:inherit}
+.dtools input:focus{border-color:rgba(0,229,255,.5)}
+.btn{background:transparent;border:1px solid var(--line);color:#9fb2c4;padding:8px 13px;cursor:pointer;font-size:11.5px;font-family:inherit;transition:.2s;white-space:nowrap}
+.btn:hover{border-color:var(--cy);color:var(--cy)}
+.btn.x:hover{border-color:var(--mg);color:var(--mg)}
+
+.msgs{flex:1;overflow-y:auto;padding:18px 26px 36px;scroll-behavior:auto}
+.msgs::-webkit-scrollbar{width:8px}.msgs::-webkit-scrollbar-thumb{background:rgba(255,45,149,.28)}
+.dsep{display:flex;align-items:center;gap:12px;margin:26px 0 14px;color:#4d5a6b;font-size:10.5px;letter-spacing:.14em}
+.dsep::before,.dsep::after{content:"";height:1px;background:rgba(120,180,255,.1);flex:1}
+.mrow{display:flex;gap:10px;padding:5px 0;max-width:900px}
+.av{width:26px;height:26px;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#03040a;margin-top:1px;letter-spacing:-.02em}
+.bd{min-width:0;flex:1}
+.mh{display:flex;align-items:baseline;gap:9px;margin-bottom:3px}
+.mh .nm{font-size:11.5px;font-weight:600;letter-spacing:.02em}
+.mh .tm{font-size:10px;color:#45525f;font-variant-numeric:tabular-nums}
+.mt{font-size:13px;line-height:1.68;color:#d3e0ec;white-space:pre-wrap;word-break:break-word}
+.mt a{color:var(--cy);text-decoration:none;border-bottom:1px dashed rgba(0,229,255,.35)}
+.mt a:hover{background:rgba(0,229,255,.1)}
+.mt mark{background:rgba(255,230,0,.28);color:#fff;padding:0 1px}
+.mrow.hit .mt{color:#fff}
+.loadbar{display:flex;justify-content:center;padding:16px 0 6px}
+.loadbar button{background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.3);color:var(--cy);padding:9px 22px;font-size:12px;cursor:pointer;font-family:inherit;letter-spacing:.06em}
+.loadbar button:hover{background:rgba(0,229,255,.16)}
+.loading,.empty{padding:60px 0;text-align:center;color:#4d5a6b;font-size:12.5px;letter-spacing:.1em}
+.err{padding:40px 20px;color:var(--mg);font-size:13px;line-height:1.8;text-align:center}
+.jump{position:fixed;right:34px;bottom:30px;z-index:100;display:none;flex-direction:column;gap:8px}
+.jump.on{display:flex}
+.jump button{width:40px;height:40px;background:rgba(6,9,18,.92);border:1px solid var(--line);color:#9fb2c4;cursor:pointer;font-size:14px}
+.jump button:hover{border-color:var(--cy);color:var(--cy)}
+</style>
+</head>
+<body>
+<canvas id="net"></canvas><div class="glow"></div>
+
+<div class="wrap">
+  <div class="badge"><i></i>WeCom · Archive 2026</div>
+  <h1>企业微信群聊档案</h1>
+  <div class="meta" id="metaLine">加载中…</div>
+  <div class="privacy">数据来源 · 企业微信本地数据库（SQLCipher 解密导出） · 仅含 <em>群聊</em> 记录，已剔除本人发言</div>
+
+  <div class="kpis">
+    <div class="kpi"><span class="n" id="kTotal">—</span><div class="l">群消息总数</div></div>
+    <div class="kpi"><span class="n" id="kGroups">—</span><div class="l">工作群</div></div>
+    <div class="kpi"><span class="n" id="kSenders">—</span><div class="l">活跃发言人</div></div>
+    <div class="kpi"><span class="n" id="kDays">—</span><div class="l">覆盖天数</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="card span2"><h2>月度消息量</h2><canvas id="cM" height="230"></canvas></div>
+    <div class="card"><h2>24h 活跃雷达</h2><canvas id="cH" height="230"></canvas></div>
+    <div class="card span2">
+      <h2>全部群组 · 点击查看聊天记录</h2>
+      <input class="search" id="q" placeholder="搜索群名 / 关键字…  ( / 聚焦)">
+      <div class="hintrow"><span id="gHint"></span><span>按消息量排序</span></div>
+      <div class="glist" id="gl"></div>
+    </div>
+    <div class="card"><h2>每日脉冲</h2><canvas id="cD" height="230"></canvas></div>
+    <div class="card span3"><h2>群内发言 TOP 24 · 点击筛选</h2><div class="glist" id="tl" style="max-height:none;display:grid;grid-template-columns:repeat(2,1fr);gap:6px"></div></div>
+  </div>
+
+  <footer><span>Source · WeCom SQLCipher · Real records only</span><span id="footTotal"></span></footer>
+</div>
+
+<div class="jump" id="jump">
+  <button onclick="jumpTop()" title="最早">↑</button>
+  <button onclick="jumpBottom()" title="最新">↓</button>
+</div>
+
+<div id="drawer">
+  <div class="dhead">
+    <div class="l">
+      <div class="t" id="dTitle">—</div>
+      <div class="meta2" id="dMeta"></div>
+      <div class="tops" id="dTops"></div>
+    </div>
+    <div class="dtools">
+      <input id="dq" placeholder="群内搜索…">
+      <button class="btn" onclick="copyLink()" id="copyBtn">复制链接</button>
+      <button class="btn x" onclick="closeChat()">关闭 ESC</button>
+    </div>
+  </div>
+  <div class="msgs" id="dMsgs"></div>
+</div>
+
+<script src="lock.js"></script>
+<script>
+const fmt=n=>(n||0).toLocaleString('en-US');
+const $=id=>document.getElementById(id);
+/* 数据加载层：本地为明文 fetch；加密发布版由 lock.js 覆盖为解密读取 */
+const LOAD = (window.__LOAD__) || (p=>fetch(p,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}));
+let GROUPS=[], STATS={}, CUR=null, DATA=[], VIEW=[], shown=0, filterName='', kw='';
+
+/* ---------- 粒子背景 ---------- */
+(function(){const cv=$('net'),g=cv.getContext('2d');let W,H,pts=[],mx=-9999,my=-9999;
+function size(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';g.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+pts=[];const n=Math.min(70,Math.round(innerWidth/22));for(let i=0;i<n;i++)pts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22});}
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+function loop(){g.clearRect(0,0,innerWidth,innerHeight);
+for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>innerWidth)p.vx*=-1;if(p.y<0||p.y>innerHeight)p.vy*=-1;
+const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy);if(d<140&&d>0){p.x+=dx/d*1.2;p.y+=dy/d*1.2;}
+g.beginPath();g.arc(p.x,p.y,1.3,0,7);g.fillStyle='rgba(0,229,255,.65)';g.fill();}
+for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+if(d<130){g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.strokeStyle='rgba(0,229,255,'+(.14*(1-d/130))+')';g.lineWidth=1;g.stroke();}}
+requestAnimationFrame(loop);}
+size();loop();addEventListener('resize',size);})();
+
+/* ---------- 图表 ---------- */
+function setup(id){const cv=$(id),dpr=devicePixelRatio||1,w=cv.clientWidth,h=cv.height;cv.width=w*dpr;cv.height=h*dpr;cv.style.height=h+'px';const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);return{g,w,h};}
+function drawMonth(){const{g,w,h}=setup('cM');const ks=Object.keys(STATS.monthly||{}),vs=ks.map(k=>STATS.monthly[k]);if(!ks.length)return;
+const pl=58,pr=16,pt=14,pb=26,max=Math.max(...vs,1)*1.1;
+const X=i=>pl+i*(w-pl-pr)/Math.max(ks.length-1,1),Y=v=>h-pb-(v/max)*(h-pt-pb);
+g.clearRect(0,0,w,h);g.strokeStyle='rgba(120,180,255,.08)';g.fillStyle='#3f4b5b';g.font='9.5px sans-serif';g.textAlign='right';
+for(let i=0;i<=4;i++){const y=pt+i*(h-pt-pb)/4;g.beginPath();g.moveTo(pl,y);g.lineTo(w-pr,y);g.stroke();g.fillText(fmt(Math.round(max*(1-i/4))),pl-8,y+3);}
+const gr=g.createLinearGradient(0,pt,0,h-pb);gr.addColorStop(0,'rgba(0,229,255,.3)');gr.addColorStop(1,'rgba(0,229,255,0)');
+g.beginPath();g.moveTo(X(0),h-pb);vs.forEach((v,i)=>g.lineTo(X(i),Y(v)));g.lineTo(X(vs.length-1),h-pb);g.closePath();g.fillStyle=gr;g.fill();
+g.beginPath();vs.forEach((v,i)=>i?g.lineTo(X(i),Y(v)):g.moveTo(X(i),Y(v)));g.strokeStyle='#00e5ff';g.lineWidth=2.2;g.shadowColor='rgba(0,229,255,.8)';g.shadowBlur=13;g.stroke();g.shadowBlur=0;
+vs.forEach((v,i)=>{g.beginPath();g.arc(X(i),Y(v),2.6,0,7);g.fillStyle='#ffe600';g.fill();});
+g.fillStyle='#556374';g.font='10px sans-serif';g.textAlign='center';ks.forEach((k,i)=>g.fillText(k.slice(5)+'月',X(i),h-8));}
+
+function drawHour(){const{g,w,h}=setup('cH');const cx=w/2,cy=h/2+14,R=Math.min(w,h)/2-16;
+const vs=Object.values(STATS.hour||{}),max=Math.max(...vs,1);g.clearRect(0,0,w,h);
+for(let r=R*.28;r<=R;r+=R*.24){g.beginPath();g.arc(cx,cy,r,0,7);g.strokeStyle='rgba(120,180,255,.1)';g.stroke();}
+for(let i=0;i<24;i++){const a0=(i/24)*Math.PI*2-Math.PI/2,a1=((i+1)/24)*Math.PI*2-Math.PI/2;
+const rr=R*(.28+.72*(vs[i]/max));g.beginPath();g.arc(cx,cy,rr,a0+.025,a1-.025);g.arc(cx,cy,R*.28,a1-.025,a0+.025,true);g.closePath();
+const t=vs[i]/max;g.fillStyle=`rgba(${Math.round(255*t)},${Math.round(229-150*t)},255,${.25+.6*t})`;g.fill();}
+const pi=vs.indexOf(max);g.fillStyle='#eaf2ff';g.textAlign='center';g.font='800 16px sans-serif';
+g.fillText(String(pi).padStart(2,'0')+':00',cx,cy+2);
+g.fillStyle='#556374';g.font='9.5px sans-serif';g.fillText('峰值时段',cx,cy+18);}
+
+function drawDaily(){const{g,w,h}=setup('cD');const ks=Object.keys(STATS.daily||{}),vs=ks.map(k=>STATS.daily[k]);if(!ks.length)return;
+const max=Math.max(...vs,1),bw=w/vs.length;g.clearRect(0,0,w,h);
+vs.forEach((v,i)=>{const bh=Math.max((v/max)*(h-14),1);
+const gr=g.createLinearGradient(0,h-bh,0,h);gr.addColorStop(0,'#ff2d95');gr.addColorStop(1,'rgba(0,229,255,.12)');
+g.fillStyle=gr;g.fillRect(i*bw,h-bh,Math.max(bw-.5,1),bh);});
+g.fillStyle='#3f4b5b';g.font='9px sans-serif';g.textAlign='left';g.fillText(ks[0],0,h-2);
+g.textAlign='right';g.fillText(ks[ks.length-1],w,h-2);}
+
+/* ---------- 群列表 ---------- */
+function initials(n){n=(n||'?').trim();const m=n.match(/^[\u4e00-\u9fa5]/);return m?m[0]:n.slice(0,2).toUpperCase();}
+function hue(n){let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%360;return h;}
+
+function renderGroups(list){
+  const el=$('gl');
+  if(!list.length){el.innerHTML='<div style="color:#556374;font-size:12px;padding:14px">没有匹配的群</div>';$('gHint').textContent='0 个群';return;}
+  el.innerHTML=list.map((g,i)=>`<div class="g" data-id="${g.id}" role="button" tabindex="0">
+    <div style="display:flex;gap:9px;align-items:center;min-width:0">
+      <div class="rank">${String(i+1).padStart(2,'0')}</div>
+      <div style="width:24px;height:24px;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#03040a;background:hsl(${hue(g.name)},85%,62%)">${initials(g.name)}</div>
+      <div style="min-width:0"><div class="nm">${esc(g.name)}</div>
+      <div class="sub">${g.from||''} → ${g.to||''} · ${g.senders||0} 人发言</div></div>
+    </div>
+    <div class="cnt">${fmt(g.msgs||g.n)}<small>${Math.round((g.msgs||g.n)/(g.senders||1))} 条/人</small></div>
+  </div>`).join('');
+  $('gHint').textContent=list.length+' 个群';
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+$('gl').addEventListener('click',e=>{
+  const row=e.target.closest('.g'); if(row) openChat(row.dataset.id);
+});
+$('gl').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){const row=e.target.closest('.g'); if(row) openChat(row.dataset.id);}
+});
+$('q').addEventListener('input',e=>{
+  const k=e.target.value.trim().toLowerCase();
+  renderGroups(k?GROUPS.filter(g=>g.name.toLowerCase().includes(k)||String(g.msgs).includes(k)):GROUPS);
+});
+
+/* ---------- 打开群聊 ---------- */
+async function openChat(id){
+  const g=GROUPS.find(x=>String(x.id)===String(id));
+  if(!g) return;
+  CUR=g; shown=0; filterName=''; kw=''; DATA=[]; VIEW=[];
+  $('drawer').classList.add('on'); $('jump').classList.add('on');
+  $('dTitle').textContent=g.name;
+  $('dMeta').innerHTML=`<span><b>${fmt(g.msgs)}</b> 条消息</span><span><b>${g.senders}</b> 人发言</span><span>${g.from} → ${g.to}</span><span>${g.kb||'—'} KB 原始</span>`;
+  $('dTops').innerHTML=(g.sp||[]).map(([n,c])=>`<span class="top" data-n="${esc(n)}">${esc(n)}<b>${c}</b></span>`).join('');
+  $('dq').value='';
+  const box=$('dMsgs');
+  box.innerHTML='<div class="loading">正在读取企业微信记录…</div>';
+  history.replaceState(null,'','#g='+id);
+
+  try{
+    const raw=await LOAD('data/chat/g_'+id+'.json');
+    raw.sort((a,b)=>String(a.t).localeCompare(String(b.t)));
+    DATA=raw;
+    VIEW=DATA.slice();
+    box.innerHTML='';
+    $('dMeta').innerHTML=`<span><b>${fmt(DATA.length)}</b> 条消息</span><span><b>${g.senders}</b> 人发言</span><span>${g.from} → ${g.to}</span>`;
+    renderChunk(true);
+  }catch(err){
+    box.innerHTML=`<div class="err">读取失败：${esc(err.message)}<br><br>如果是用 file:// 直接双击打开的，浏览器会拦截本地 JSON 请求。<br>请在目录内启动服务：<br><code style="color:#8ff4ff">cd ~/Desktop/groupchat-site &amp;&amp; python3 -m http.server 8080</code><br>然后访问 http://localhost:8080</div>`;
+  }
+}
+
+/* ---------- 渲染消息 ---------- */
+function msgNode(m){
+  const row=document.createElement('div'); row.className='mrow';
+  const av=document.createElement('div'); av.className='av';
+  av.textContent=initials(m.s); av.style.background=`hsl(${hue(m.s||'')},82%,62%)`;
+  const bd=document.createElement('div'); bd.className='bd';
+  const mh=document.createElement('div'); mh.className='mh';
+  const nm=document.createElement('span'); nm.className='nm'; nm.textContent=m.s||'未知';
+  nm.style.color=`hsl(${hue(m.s||'')},85%,72%)`;
+  const tm=document.createElement('span'); tm.className='tm'; tm.textContent=(m.t||'').slice(6);
+  mh.append(nm,tm);
+  const mt=document.createElement('div'); mt.className='mt';
+  paintText(mt,m.c||'',kw);
+  bd.append(mh,mt); row.append(av,bd);
+  return row;
+}
+function paintText(el,text,kw){
+  if(!kw){ el.textContent=text; return; }
+  const low=text.toLowerCase(), k=kw.toLowerCase();
+  let i=0,pos;
+  while((pos=low.indexOf(k,i))>-1){
+    if(pos>i) el.appendChild(document.createTextNode(text.slice(i,pos)));
+    const mk=document.createElement('mark'); mk.textContent=text.slice(pos,pos+k.length); el.appendChild(mk);
+    i=pos+k.length;
+  }
+  if(i<text.length) el.appendChild(document.createTextNode(text.slice(i)));
+}
+function dayLabel(t){const mm=t.slice(0,2),dd=t.slice(3,5);
+  const d=new Date(2026,+mm-1,+dd); const wd='日一二三四五六'[d.getDay()];
+  return `${+mm}月${+dd}日 · 周${wd}`;}
+
+function renderChunk(reset){
+  const box=$('dMsgs');
+  const total=VIEW.length;
+  const start=Math.max(total-shown-150,0), end=total-shown;
+  if(end<=start){return;}
+  const frag=document.createDocumentFragment();
+  let prevDay=null;
+  if(!reset){
+    const firstInChunk=VIEW[start];
+    prevDay=firstInChunk?String(firstInChunk.t).slice(0,5):null;
+  }
+  const anchorH=box.scrollHeight, anchorTop=box.scrollTop;
+  for(let i=start;i<end;i++){
+    const m=VIEW[i], day=String(m.t).slice(0,5);
+    if(day!==prevDay){
+      const sep=document.createElement('div'); sep.className='dsep'; sep.textContent=dayLabel(m.t);
+      frag.appendChild(sep); prevDay=day;
+    }
+    frag.appendChild(msgNode(m));
+  }
+  const oldBar=box.querySelector('.loadbar');
+  if(oldBar) oldBar.remove();
+  if(!reset){
+    box.insertBefore(frag,box.firstChild);
+    box.scrollTop=box.scrollHeight-anchorH+anchorTop;
+  }else{
+    box.appendChild(frag);
+    box.scrollTop=box.scrollHeight;
+  }
+  shown+=150;
+  if(start>0){
+    const bar=document.createElement('div'); bar.className='loadbar';
+    const b=document.createElement('button'); b.textContent=`加载更早的记录（剩余 ${fmt(start)} 条）`;
+    b.onclick=renderChunk; bar.appendChild(b);
+    box.insertBefore(bar,box.firstChild);
+    if(!reset) box.scrollTop=box.scrollHeight-anchorH+anchorTop;
+  }
+}
+
+/* ---------- 群内搜索 / 按人筛选 ---------- */
+let dqTimer=null;
+$('dq').addEventListener('input',e=>{
+  clearTimeout(dqTimer);
+  dqTimer=setTimeout(()=>{
+    kw=e.target.value.trim();
+    applyFilter(true);
+  },220);
+});
+$('dTops').addEventListener('click',e=>{
+  const t=e.target.closest('.top'); if(!t) return;
+  const n=t.dataset.n;
+  filterName = (filterName===n)?'':n;
+  [...$('dTops').children].forEach(c=>{
+    c.style.borderColor = c.dataset.n===filterName ? 'var(--cy)' : 'rgba(120,180,255,.16)';
+    c.style.color = c.dataset.n===filterName ? 'var(--cy)' : '#8ea3b8';
+  });
+  applyFilter(true);
+});
+function applyFilter(reset){
+  const box=$('dMsgs');
+  VIEW = DATA.filter(m=>{
+    if(filterName && m.s!==filterName) return false;
+    if(kw){ const c=(m.c||'').toLowerCase(); if(!c.includes(kw.toLowerCase())) return false; }
+    return true;
+  });
+  shown=0;
+  box.innerHTML='';
+  if(!VIEW.length){
+    box.innerHTML='<div class="empty">没有匹配的消息</div>';
+    return;
+  }
+  const tip=document.createElement('div'); tip.className='empty'; tip.style.padding='10px 0 0';
+  tip.textContent=`${filterName?'筛选：'+filterName+' · ':''}${kw?'关键词「'+kw+'」· ':''}命中 ${fmt(VIEW.length)} 条`;
+  box.appendChild(tip);
+  renderChunk(true);
+}
+
+/* ---------- 其它 ---------- */
+function closeChat(){
+  $('drawer').classList.remove('on'); $('jump').classList.remove('on');
+  history.replaceState(null,'',location.pathname);
+}
+function copyLink(){
+  const url=location.origin+location.pathname+'#g='+CUR.id;
+  navigator.clipboard.writeText(url).then(()=>{
+    const b=$('copyBtn'); b.textContent='已复制'; setTimeout(()=>b.textContent='复制链接',1400);
+  }).catch(()=>prompt('复制此链接：',url));
+}
+function jumpTop(){const b=$('dMsgs'); b.scrollTop=0;}
+function jumpBottom(){const b=$('dMsgs'); b.scrollTop=b.scrollHeight;}
+addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeChat();
+  if(e.key==='/'&&!$('drawer').classList.contains('on')){e.preventDefault();$('q').focus();}
+});
+
+/* ---------- 启动 ---------- */
+(async function boot(){
+  try{ if(window.__READY__) await window.__READY__; }catch(e){ return; }
+  try{
+    const [s,gs]=await Promise.all([
+      LOAD('data/stats.json'),
+      LOAD('data/groups.json')
+    ]);
+    STATS=s; GROUPS=gs;
+  }catch(e){
+    $('metaLine').innerHTML='<span style="color:#ff2d95">数据加载失败 —— 请用本地服务器打开：<code>python3 -m http.server 8080</code></span>';
+    return;
+  }
+  $('metaLine').innerHTML=`区间 <b>${STATS.from}</b> → <b>${STATS.to}</b> · 覆盖 <b>${GROUPS.length}</b> 个工作群 · <b>${fmt(STATS.total)}</b> 条真实群聊消息`;
+  $('kTotal').textContent=fmt(STATS.total);
+  $('kGroups').textContent=GROUPS.length;
+  $('kSenders').textContent=fmt(STATS.sendersCount);
+  $('kDays').textContent=STATS.days||'—';
+  $('footTotal').textContent=fmt(STATS.total)+' messages · '+GROUPS.length+' groups · 2026';
+  renderGroups(GROUPS);
+  $('tl').innerHTML=(STATS.topSenders||[]).map(([n,c])=>{
+    const rank=Math.round(c/ (STATS.topSenders[0][1]/100));
+    return `<div class="g" data-n="${esc(n)}" style="cursor:pointer">
+      <div style="display:flex;gap:9px;align-items:center;min-width:0">
+        <div style="width:22px;height:22px;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#03040a;background:hsl(${hue(n)},82%,62%)">${initials(n)}</div>
+        <div style="min-width:0"><div class="nm">${esc(n)}</div>
+        <div class="sub" style="height:3px;background:linear-gradient(90deg,rgba(0,229,255,.6) ${Math.max(rank,3)}%,rgba(255,255,255,.05) ${Math.max(rank,3)}%);border-radius:2px;margin-top:6px"></div></div>
+      </div>
+      <div class="cnt">${fmt(c)}</div></div>`;
+  }).join('');
+  $('tl').addEventListener('click',e=>{
+    const row=e.target.closest('.g'); if(!row) return;
+    const n=row.dataset.n;
+    const target=GROUPS.find(g=>(g.sp||[]).some(([x])=>x===n));
+    if(target){ openChat(target.id); setTimeout(()=>{
+      const chip=[...$('dTops').children].find(c=>c.dataset.n===n);
+      if(chip) chip.click();
+    },700); }
+  });
+  drawMonth();drawHour();drawDaily();
+
+  const h=location.hash.match(/^#g=(\w+)/);
+  if(h) openChat(h[1]);
+})();
+addEventListener('resize',()=>{drawMonth();drawHour();drawDaily();});
+</script>
+</body>
+</html>

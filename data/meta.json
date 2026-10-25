@@ -1,0 +1,1 @@
+{"v":1,"kdf":"PBKDF2-SHA256","iters":310000,"salt":"f264c06f4fdddcfc891744c2b305ddad","cipher":"AES-256-GCM"}
